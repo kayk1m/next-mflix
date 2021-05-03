@@ -31,7 +31,7 @@ const App: React.FC<AppProps> = ({ Component, pageProps }) => {
         <script type="text/javascript" src="/js/redirectIE.js" />
       </Head>
       <DefaultSeo
-        title="My NextJS App"
+        defaultTitle="My NextJS App"
         description="template for nextjs-mongodb web application."
       />
       <ManagedUIContext>

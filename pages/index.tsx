@@ -1,150 +1,97 @@
 import React from 'react';
-import Dropdown from '@components/ui/Dropdown';
+import { GetStaticProps, InferGetStaticPropsType } from 'next';
+import NextLink from 'next/link';
+import { NextSeo } from 'next-seo';
 
-import { ChevronDownIcon } from '@heroicons/react/solid';
-import { useUI } from '@components/ui/context';
-import Button from '@components/ui/Button';
-import Select from '@components/ui/Select';
+// utilities
+import connectMongo from '@utils/connectMongo';
+import { encodeId } from '@utils/hashIds';
 
-const genders = [
-  {
-    key: 'gender0',
-    label: '선택',
-    value: null,
-  },
-  {
-    key: 'gender1',
-    label: '남성',
-    value: 'male',
-  },
-  {
-    key: 'gender2',
-    label: '여성',
-    value: 'female',
-  },
-  {
-    key: 'gender3',
-    label: '기타',
-    value: 'other',
-  },
-];
+// components
+import MovieGridItem from '@components/movie/MovieGridItem';
 
-const IndexPage = () => {
-  const { showModal, closeModal, showNoti } = useUI();
-  const [gender, setGender] = React.useState<{
-    key: string;
-    label: string;
-    value: string | null;
-  }>(genders[0]);
+interface Props {
+  movies: MovieJSON[];
+}
 
+const IndexPage = ({
+  movies,
+}: InferGetStaticPropsType<typeof getStaticProps>) => {
   return (
-    <div className="mx-auto max-w-screen-lg text-2xl pt-4 h-[1200px] flex justify-center">
-      {/* <p className="text-xl">hello world</p> */}
-      <div className="space-y-4">
-        <Dropdown
-          button={
-            <div className="inline-flex justify-center w-full rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50">
-              options
-              <ChevronDownIcon
-                className="-mr-1 ml-2 h-5 w-5"
-                aria-hidden="true"
-              />
-            </div>
-          }
-          dropdownItems={[
-            { label: 'hello', onClick: () => {} },
-            { label: 'world', onClick: () => {} },
-          ]}
-        />
-        <Select
-          label="성별"
-          items={genders}
-          selectedValue={gender.value}
-          onSelect={(item) => setGender(item as never)}
-        />
-        <div>
-          <Button
-            onClick={() =>
-              showModal({
-                variant: 'alert',
-                title: '댓글을 완전히 삭제할까요?',
-                content:
-                  '삭제된 댓글은 복구할 수 없습니다. 댓글에 달린 모든 답글도 함께 삭제됩니다.',
-                actionButton: {
-                  label: '삭제',
-                  onClick: () => {
-                    closeModal();
-                  },
-                },
-                cancelButton: {
-                  label: '취소',
-                  onClick: () => closeModal(),
-                },
-              })
-            }
-          >
-            open alert modal
-          </Button>
-        </div>
-
-        <div>
-          <Button
-            onClick={() =>
-              showModal({
-                title: '댓글을 완전히 복구?',
-                content:
-                  '복구된 댓글은 삭제할 수 없습니다. 댓글에 달린 모든 답글도 함께 복구됩니다.',
-                actionButton: {
-                  label: '복구',
-                  onClick: () => {
-                    closeModal();
-                  },
-                },
-                cancelButton: {
-                  label: '취소',
-                  onClick: () => closeModal(),
-                },
-              })
-            }
-          >
-            open modal
-          </Button>
-        </div>
-        <div>
-          <Button
-            onClick={() => showNoti({ title: '알람입니다.', variant: 'alert' })}
-          >
-            alert Noti
-          </Button>
-        </div>
-        <div className="space-y-4">
-          <Button onClick={() => showNoti({ title: '기본입니다.' })}>
-            default Noti
-          </Button>
-          <div>
-            <Button size="sm">작은버튼</Button>
-          </div>
-          <div>
-            <Button size="base">기본버튼</Button>
-          </div>
-          <div>
-            <Button size="lg">큰버튼</Button>
-          </div>
-          <div>
-            <Button full>긴</Button>
-          </div>
-          <div>
-            <Button color="red" size="lg">
-              빨간샥버튼
-            </Button>
-          </div>
-          <div>
-            <Button color="white">하얀색버튼</Button>
-          </div>
-        </div>
+    <>
+      <NextSeo title="mflix movies list" />
+      <div className="container max-w-screen-lg mx-auto py-16 px-4">
+        <ul
+          role="list"
+          className="grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-3 sm:gap-x-6 lg:grid-cols-4 xl:gap-x-8"
+        >
+          {movies.map((movie) => (
+            <NextLink key={movie._id} href={`/movie/${movie._id}`}>
+              <a>
+                <MovieGridItem as="li" movie={movie} />
+              </a>
+            </NextLink>
+          ))}
+        </ul>
       </div>
-    </div>
+    </>
   );
+};
+
+export const getStaticProps: GetStaticProps<Props> = async () => {
+  const { db } = await connectMongo();
+
+  const cursor = db.collection('movies').aggregate([
+    {
+      $match: {
+        title: { $exists: true },
+        poster: { $exists: true },
+        plot: { $exists: true },
+        genres: { $exists: true },
+        runtime: { $exists: true },
+        year: { $exists: true },
+        'imdb.id': { $exists: true, $ne: '' },
+        'imdb.rating': { $exists: true, $ne: '' },
+        'imdb.votes': { $exists: true, $ne: '' },
+      },
+    },
+    {
+      $sort: {
+        'imdb.rating': -1,
+      },
+    },
+    {
+      $limit: 30,
+    },
+    {
+      $project: {
+        _id: 1,
+        title: 1,
+        poster: 1,
+        plot: 1,
+        genres: 1,
+        runtime: 1,
+        year: 1,
+        imdb: 1,
+      },
+    },
+  ]);
+
+  const moviesBSON = (await cursor.toArray()) as MovieBSON[];
+
+  await cursor.close();
+
+  return {
+    props: {
+      // convert MovieBSON to MovieJSON
+      movies: moviesBSON.map(({ _id, ...movie }) => ({
+        ...movie,
+        _id: encodeId(_id),
+      })),
+    },
+    // revalidate in seconds
+    revalidate: 10,
+  };
 };
 
 export default IndexPage;
