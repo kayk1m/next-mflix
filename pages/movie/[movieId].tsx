@@ -2,7 +2,7 @@ import React from 'react';
 import { GetStaticPaths, GetStaticProps, InferGetStaticPropsType } from 'next';
 import { ParsedUrlQuery } from 'node:querystring';
 import { ObjectId } from 'bson';
-// import cn from 'classnames';
+import { NextSeo } from 'next-seo';
 
 // utilities
 import connectMongo from '@utils/connectMongo';
@@ -16,42 +16,58 @@ const MovieDetailsPage = ({
   movie: { title, poster, plot, runtime, year },
 }: InferGetStaticPropsType<typeof getStaticProps>) => {
   return (
-    <div className="bg-gray-50 h-screen">
-      <div className="max-w-screen-sm sm:py-8 sm:px-4 mx-auto">
-        <div className="block w-full aspect-w-16 aspect-h-9 sm:rounded-lg shadow overflow-hidden">
-          <img
-            src={poster}
-            alt=""
-            className="object-cover pointer-events-none"
-          />
-        </div>
-        <div className="mt-4 bg-white shadow overflow-hidden sm:rounded-lg">
-          <div className="px-4 py-5 sm:px-6">
-            <h3 className="text-lg leading-6 font-medium text-gray-900">
-              {title}
-            </h3>
+    <>
+      <NextSeo
+        title={title}
+        description={plot}
+        openGraph={{
+          title,
+          description: plot,
+          images: [
+            {
+              url: poster,
+            },
+          ],
+        }}
+      />
+      ,
+      <div className="bg-gray-50 h-screen">
+        <div className="max-w-screen-sm sm:py-8 sm:px-4 mx-auto">
+          <div className="block w-full aspect-w-16 aspect-h-9 sm:rounded-lg shadow overflow-hidden">
+            <img
+              src={poster}
+              alt=""
+              className="object-cover pointer-events-none"
+            />
           </div>
-          <div className="border-t border-gray-200 px-4 py-5 sm:px-6">
-            <dl className="grid grid-cols-1 gap-x-4 gap-y-8 sm:grid-cols-2">
-              <div className="sm:col-span-1">
-                <dt className="text-sm font-medium text-gray-500">Year</dt>
-                <dd className="mt-1 text-sm text-gray-900">{year}</dd>
-              </div>
-              <div className="sm:col-span-1">
-                <dt className="text-sm font-medium text-gray-500">Runtime</dt>
-                <dd className="mt-1 text-sm text-gray-900">
-                  {runtime.toLocaleString()}
-                </dd>
-              </div>
-              <div className="sm:col-span-2">
-                <dt className="text-sm font-medium text-gray-500">Plot</dt>
-                <dd className="mt-1 text-sm text-gray-900">{plot}</dd>
-              </div>
-            </dl>
+          <div className="mt-4 bg-white shadow overflow-hidden sm:rounded-lg">
+            <div className="px-4 py-5 sm:px-6">
+              <h3 className="text-lg leading-6 font-medium text-gray-900">
+                {title}
+              </h3>
+            </div>
+            <div className="border-t border-gray-200 px-4 py-5 sm:px-6">
+              <dl className="grid grid-cols-1 gap-x-4 gap-y-8 sm:grid-cols-2">
+                <div className="sm:col-span-1">
+                  <dt className="text-sm font-medium text-gray-500">Year</dt>
+                  <dd className="mt-1 text-sm text-gray-900">{year}</dd>
+                </div>
+                <div className="sm:col-span-1">
+                  <dt className="text-sm font-medium text-gray-500">Runtime</dt>
+                  <dd className="mt-1 text-sm text-gray-900">
+                    {runtime.toLocaleString()}
+                  </dd>
+                </div>
+                <div className="sm:col-span-2">
+                  <dt className="text-sm font-medium text-gray-500">Plot</dt>
+                  <dd className="mt-1 text-sm text-gray-900">{plot}</dd>
+                </div>
+              </dl>
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 
