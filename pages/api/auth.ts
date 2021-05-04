@@ -9,7 +9,7 @@ if (!jwtSecret) throw new Error('Missing JWT_SECRET.');
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method === 'GET') {
-    const userId = verifyToken(req, res, true);
+    const userId = verifyToken(req, res, { optional: true });
 
     return res.json({ userId });
   }
