@@ -22,17 +22,11 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     const { db } = await connectMongo();
 
     await db.collection('user').updateOne(
+      { username },
       {
-        username,
+        $push: { history: new Date() },
       },
-      {
-        $push: {
-          history: new Date(),
-        },
-      },
-      {
-        upsert: true,
-      },
+      { upsert: true },
     );
 
     const user = await db
