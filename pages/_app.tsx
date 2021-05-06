@@ -2,7 +2,7 @@
 import '@assets/main.css';
 import 'nprogress/nprogress.css';
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import type { AppProps } from 'next/app';
 import Head from 'next/head';
 import Router from 'next/router';
@@ -11,6 +11,8 @@ import { DefaultSeo } from 'next-seo';
 
 import ManagedUIContext from '@components/ui/context';
 import Layout from '@components/ui/Layout';
+
+import { initializeTagManager } from '@lib/tagmanager';
 
 NProgress.configure({
   minimum: 0.3,
@@ -24,6 +26,10 @@ Router.events.on('routeChangeComplete', () => NProgress.done());
 Router.events.on('routeChangeError', () => NProgress.done());
 
 const App: React.FC<AppProps> = ({ Component, pageProps }) => {
+  useEffect(() => {
+    initializeTagManager();
+  }, []);
+
   return (
     <>
       <Head>
