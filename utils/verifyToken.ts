@@ -49,7 +49,10 @@ const verifyToken = <T extends { optional: boolean }>(
   try {
     const { 'next-mflix-token': token } = req.cookies;
 
-    if (!token) throw new Error('No token on cookies.');
+    if (!token) {
+      if (options.optional) return null as ReturnType<T>;
+      throw new Error('No token on cookies.');
+    }
 
     const { userId } = jwt.verify(token, jwtSecret) as {
       userId: string;

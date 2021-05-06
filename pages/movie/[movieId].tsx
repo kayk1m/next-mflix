@@ -30,7 +30,6 @@ const MovieDetailsPage = ({
           ],
         }}
       />
-      ,
       <div className="bg-gray-50 h-screen">
         <div className="max-w-screen-sm sm:py-8 sm:px-4 mx-auto">
           <div className="block w-full aspect-w-16 aspect-h-9 sm:rounded-lg shadow overflow-hidden">

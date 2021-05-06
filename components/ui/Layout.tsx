@@ -1,3 +1,4 @@
+import Header from '@components/core/Header';
 import React from 'react';
 import { useUI } from './context';
 
@@ -12,6 +13,9 @@ const Layout: React.FC = ({ children }) => {
 
   return (
     <div className="relative min-h-full w-full">
+      <header className="sticky top-0 z-10">
+        <Header />
+      </header>
       <main className="relative">{children}</main>
       <Modal show={modalFlag} {...modalContent} />
       <Notification
