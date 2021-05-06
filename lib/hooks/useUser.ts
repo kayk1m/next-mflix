@@ -9,7 +9,7 @@ interface UseUserOptions {
 }
 
 export declare interface UserInfo {
-  userId: string;
+  username: string;
 }
 
 export default function useUser(options: Partial<UseUserOptions> = {}) {
@@ -24,9 +24,9 @@ export default function useUser(options: Partial<UseUserOptions> = {}) {
   useEffect(() => {
     if (user === undefined) return;
 
-    if (!user?.userId && redirectTo && !redirectIfFound) {
+    if (!user?.username && redirectTo && !redirectIfFound) {
       router.replace(redirectTo, redirectAs);
-    } else if (user?.userId && redirectIfFound) {
+    } else if (user?.username && redirectIfFound) {
       router.replace(redirectTo ?? '/', redirectAs);
     }
   }, [router, user, redirectTo, redirectAs, redirectIfFound]);

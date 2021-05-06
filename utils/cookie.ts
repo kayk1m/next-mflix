@@ -1,4 +1,3 @@
-import { ObjectId } from 'bson';
 import { serialize } from 'cookie';
 import jwt from 'jsonwebtoken';
 
@@ -10,7 +9,7 @@ interface CookieOptions {
 }
 
 export const bakeCookies: (
-  userId: ObjectId,
+  userId: string,
   cookieOptions: CookieOptions,
 ) => string[] = (userId, { secure }) => {
   const token = jwt.sign({ userId }, jwtSecret);

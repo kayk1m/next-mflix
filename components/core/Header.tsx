@@ -156,7 +156,7 @@ const Header: FC = () => {
                                   'block w-full text-left px-4 py-2 text-sm text-gray-700',
                                   {
                                     'bg-gray-100': active,
-                                    hidden: !user?.userId,
+                                    hidden: !user?.username,
                                   },
                                 )}
                                 onClick={handleSignOut}
@@ -173,7 +173,7 @@ const Header: FC = () => {
                                     'block px-4 py-2 text-sm text-gray-700',
                                     {
                                       'bg-gray-100': active,
-                                      hidden: !!user?.userId,
+                                      hidden: !!user?.username,
                                     },
                                   )}
                                 >
@@ -215,11 +215,11 @@ const Header: FC = () => {
                 </div>
                 <div className="ml-3">
                   <div className="text-base font-medium text-gray-800">
-                    {user?.userId ? 'Test User' : 'Signin first.'}
+                    {user?.username ? 'Test User' : 'Signin first.'}
                   </div>
-                  {user?.userId && (
+                  {user?.username && (
                     <div className="text-sm font-medium text-gray-500">
-                      {user?.userId}
+                      {user?.username}
                     </div>
                   )}
                 </div>
@@ -241,7 +241,7 @@ const Header: FC = () => {
                 >
                   Settings
                 </a>
-                {user?.userId ? (
+                {user?.username ? (
                   <button
                     className="block px-4 py-2 text-base font-medium text-gray-500 hover:text-gray-800 hover:bg-gray-100"
                     onClick={() => {
