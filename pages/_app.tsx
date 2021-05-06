@@ -13,6 +13,7 @@ import ManagedUIContext from '@components/ui/context';
 import Layout from '@components/ui/Layout';
 
 import { initializeTagManager } from '@lib/tagmanager';
+import useUser from '@lib/hooks/useUser';
 
 NProgress.configure({
   minimum: 0.3,
@@ -26,9 +27,13 @@ Router.events.on('routeChangeComplete', () => NProgress.done());
 Router.events.on('routeChangeError', () => NProgress.done());
 
 const App: React.FC<AppProps> = ({ Component, pageProps }) => {
+  const { user } = useUser();
+
   useEffect(() => {
-    initializeTagManager();
-  }, []);
+    if (user !== undefined) {
+      initializeTagManager({ userId: user.username });
+    }
+  }, [user]);
 
   return (
     <>
