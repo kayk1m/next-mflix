@@ -5,26 +5,35 @@ import { LockClosedIcon } from '@heroicons/react/outline';
 import Input from '@components/ui/Input';
 import useUser from '@lib/hooks/useUser';
 import signin from '@lib/signin';
+import { useUI } from '@components/ui/context';
 
 const SigninPage = () => {
   const [username, setUsername] = useState('');
   const [loading, setLoading] = useState(false);
+
+  const { showNoti } = useUI();
 
   const { loading: userLoading } = useUser({
     redirectTo: '/',
     redirectIfFound: true,
   });
 
-  const handleSignin = React.useCallback((username: string) => {
-    setLoading(true);
-    signin(username)
-      .then(async () => {
-        await mutate('/api/auth');
-      })
-      .finally(() => {
-        setLoading(false);
-      });
-  }, []);
+  const handleSignin = React.useCallback(
+    (username: string) => {
+      setLoading(true);
+      signin(username)
+        .then(async () => {
+          await mutate('/api/auth');
+        })
+        .catch((err) => {
+          showNoti({ variant: 'alert', title: err.message });
+        })
+        .finally(() => {
+          setLoading(false);
+        });
+    },
+    [showNoti],
+  );
 
   return (
     <div className="flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
