@@ -1,7 +1,7 @@
 {
-  "name": "next-tailwindcss-typescript",
+  "name": "next-mflix",
   "version": "1.0.1",
-  "description": "template project",
+  "description": "toy app made by Kay Kim",
   "scripts": {
     "dev": "next dev",
     "build": "next build",

@@ -1,7 +1,7 @@
 import React from 'react';
 import { GetStaticPaths, GetStaticProps, InferGetStaticPropsType } from 'next';
 import { ParsedUrlQuery } from 'node:querystring';
-import { ObjectId } from 'bson';
+// import { ObjectId } from 'bson';
 import { NextSeo } from 'next-seo';
 
 // utilities
@@ -71,46 +71,47 @@ const MovieDetailsPage = ({
 };
 
 export const getStaticPaths: GetStaticPaths = async () => {
-  const { db } = await connectMongo();
+  // const { db } = await connectMongo();
 
-  const cursor = db.collection('movies').aggregate([
-    {
-      $match: {
-        title: { $exists: true },
-        poster: { $exists: true },
-        plot: { $exists: true },
-        genres: { $exists: true },
-        runtime: { $exists: true },
-        year: { $exists: true },
-        'imdb.id': { $exists: true, $ne: '' },
-        'imdb.rating': { $exists: true, $ne: '' },
-        'imdb.votes': { $exists: true, $ne: '' },
-      },
-    },
-    {
-      $sort: {
-        'imdb.rating': -1,
-      },
-    },
-    {
-      $limit: 30,
-    },
-    {
-      $project: {
-        _id: 1,
-      },
-    },
-  ]);
+  // const cursor = db.collection('movies').aggregate([
+  //   {
+  //     $match: {
+  //       title: { $exists: true },
+  //       poster: { $exists: true },
+  //       plot: { $exists: true },
+  //       genres: { $exists: true },
+  //       runtime: { $exists: true },
+  //       year: { $exists: true },
+  //       'imdb.id': { $exists: true, $ne: '' },
+  //       'imdb.rating': { $exists: true, $ne: '' },
+  //       'imdb.votes': { $exists: true, $ne: '' },
+  //     },
+  //   },
+  //   {
+  //     $sort: {
+  //       'imdb.rating': -1,
+  //     },
+  //   },
+  //   {
+  //     $limit: 30,
+  //   },
+  //   {
+  //     $project: {
+  //       _id: 1,
+  //     },
+  //   },
+  // ]);
 
-  const movieIds = (await cursor.toArray()) as ObjectId[];
+  // const movieIds = (await cursor.toArray()) as ObjectId[];
 
-  await cursor.close();
+  // await cursor.close();
   return {
-    paths: movieIds.map((_id) => ({
-      params: {
-        movieId: encodeId(_id),
-      },
-    })),
+    // paths: movieIds.map((_id) => ({
+    //   params: {
+    //     movieId: encodeId(_id),
+    //   },
+    // })),
+    paths: [],
     fallback: 'blocking',
   };
 };
